@@ -1,3 +1,6 @@
+#folders
 /.idea/
 /.vscode/
+
+#file extensions
 *.iml
