@@ -1,0 +1,215 @@
+% Package for creating front pages for project theses.
+% Implemented by Martin Helsø (martibhe@math.uio.no).
+% Version 2020-09-26.
+
+
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{projectfp}
+
+\newif\ifgeometry
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Language:
+\DeclareOption{american}{\def\PFP@lang{eng}}
+\DeclareOption{english}{\def\PFP@lang{eng}}
+\DeclareOption{UKenglish}{\def\PFP@lang{eng}}
+\DeclareOption{USenglish}{\def\PFP@lang{eng}}
+\DeclareOption{norsk}{\def\PFP@lang{bm}}
+\DeclareOption{nynorsk}{\def\PFP@lang{nn}}
+
+
+%% COURSE:
+\DeclareOption{NoCourse}
+{
+    \def\PFP@course@eng{Artificial Intelligence for Energy Informatics}
+    \def\PFP@course@bm{Velg et emne}
+    \def\PFP@course@nn{Vel eit emne}
+}
+\DeclareOption{IN5460}
+{
+    \def\PFP@course@eng
+    {
+        IN5460/IN9460
+        \textthreequartersemdash\
+        Assignment 2
+    }
+}
+
+
+%% Standard options:
+\ExecuteOptions{english}
+\ExecuteOptions{IN5460}
+\ProcessOptions*
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\RequirePackage{calc}
+\RequirePackage{graphicx}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{textcomp}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TITLE PAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\@ifclassloaded{memoir}
+{
+    \newcommand{\projectfrontpage}
+    {
+        \begin{titlingpage}
+            \calccentering{\unitlength}
+            \begin{adjustwidth*}{\unitlength}{-\unitlength}
+                \printtitle
+            \end{adjustwidth*}
+        \end{titlingpage}
+    }
+}
+{
+    \newcommand{\projectfrontpage}
+    {
+        \begin{titlepage}
+            \printtitle
+        \end{titlepage}
+    }
+}
+
+\newcommand{\printtitle}
+{
+    \renewcommand{\sfdefault}{phv}
+    \sffamily
+    \fontsize{15}{16pt}
+    \selectfont
+    \raggedright
+
+    \vspace*{-2mm}
+    \includegraphics[scale = 0.5]{style/InfoDept-logo-2-eng}
+
+    \vskip18mm
+
+    % \resizebox
+    % {
+    %     \ifdim \width > \textwidth
+    %         \textwidth
+    %     \else
+    %         \width
+    %     \fi
+    % }{!}
+    {%
+        \large
+        % \ifdefined \authors
+        \csname PFP@authors@\PFP@lang\endcsname:
+        \PFP@authors@name
+        % \else
+        %     \@author
+        % \fi
+    }
+
+    \vskip10mm
+
+    {
+        \fontsize{18}{25pt}
+        \selectfont
+        \bfseries
+        \boldmath
+        \@title
+        \par
+    }
+
+    \vskip10mm
+
+    {
+        \bfseries
+        \csname PFP@course@\PFP@lang\endcsname
+    }
+
+    \vskip9mm
+    
+
+
+    \vfill
+
+    \begin{minipage}[c][26mm]{28mm}
+        \hspace*{1mm}
+        \includegraphics[width = 32mm]{style/projectfp-apollon}
+    \end{minipage}%
+    \begin{minipage}[c]{\textwidth - 28mm}
+        \hfill
+        \bfseries
+        Autumn
+        \the\year
+    \end{minipage}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SUPERVISOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\supervisor}[1]{\def\PFP@supervisor@name{#1}\checknextarg}
+\newcommand{\checknextarg}
+{
+    \@ifnextchar{\bgroup}
+    {
+        \def\PFP@supervisor@eng{Supervisors}
+        \def\PFP@supervisor@bm{Veiledere}
+        \def\PFP@supervisor@nn{Rettleiarar}
+        \gobblenextarg
+    }{}
+}
+\newcommand{\gobblenextarg}[1]
+{
+    \@ifnextchar{\bgroup}
+    {
+        \g@addto@macro\PFP@supervisor@name{, #1}
+        \gobblenextarg
+    }
+    {
+        \g@addto@macro\PFP@supervisor@name
+        { \csname PFP@and@\PFP@lang\endcsname\ #1}
+    }
+}
+\newcommand{\PFP@supervisor@name}{}
+\newcommand{\PFP@supervisor@eng}{Supervisor}
+\newcommand{\PFP@supervisor@bm}{Veileder}
+\newcommand{\PFP@supervisor@nn}{Rettleiar}
+\newcommand{\PFP@and@eng}{and}
+\newcommand{\PFP@and@bm}{og}
+\newcommand{\PFP@and@nn}{og}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SUPERVISOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\authors}[1]{\def\PFP@authors@name{#1}\checknexauthor}
+\newcommand{\checknexauthor}
+{
+    \@ifnextchar{\bgroup}
+    {
+        \def\PFP@authors@eng{Authors}
+        \def\PFP@authors@bm{Veiledere}
+        \def\PFP@authors@nn{Rettleiarar}
+        \gobblenextauthor
+    }{}
+}
+\newcommand{\gobblenextauthor}[1]
+{
+    \@ifnextchar{\bgroup}
+    {
+        \g@addto@macro\PFP@authors@name{, #1}
+        \gobblenextauthor
+    }
+    {
+        \g@addto@macro\PFP@authors@name
+        { \csname PFP@and@\PFP@lang\endcsname\ #1}
+    }
+}
+\newcommand{\PFP@authors@name}{}
+\newcommand{\PFP@authors@eng}{Authors}
+\newcommand{\PFP@authors@bm}{Veileder}
+\newcommand{\PFP@authors@nn}{Rettleiar}
+
+
+\endinput

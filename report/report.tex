@@ -1,52 +1,54 @@
+\documentclass[a4paper, article, oneside, USenglish, IN5460]{memoir}
 
-\documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
- \geometry{
- a4paper,
- total={120mm,240mm},
- left=36mm,
- right=36mm,
- top=36mm,
- bottom=36mm,
- }
-\usepackage[numbers]{natbib}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{amsthm}
-\usepackage{enumerate}
-\usepackage{verbatim}
-\usepackage{hyperref}
-\usepackage{array,epsfig}
-\usepackage{amsxtra}
-\usepackage{mathrsfs}
-\usepackage{color}
-\usepackage{float}
-\usepackage{caption}
-\usepackage{subcaption}
-\setlength{\bibsep}{0.33pt}
-\title{\textbf{IN5460/IN9460 Assignment 2: Appliance Energy Consumption Prediction and
-Classification Using Federated Learning}}
-\author{F. Ofstad, Z. Shan, R. Syed, H. Zhang}
+\input{style/import}
+
+
+\title{Appliance Energy Consumption Prediction and Classification Using Federated Learning}
+\authors{F. Ofstad, Z. Shan, R. Syed, H. Zhang}
+
 \date{}
-\begin{document}
-\maketitle
 
-\section{Introduction}
+\begin{document}
+
+\projectfrontpage
+
+
+
+\chapter{Introducton}
+
+
+\chapter{Simulation}
+
+
+
+\chapter{Question 1}
+
+You need to use both LSTM and another RNN (e.g., a vanilla RNN) when implementing federated learning for both the prediction and classification model. You will determine how many layers and how many nodes in each layer when designing the model structure. The following questions should be considered in your assignment report.
 
 \section{Question 1.1}
 
+Is the federated learning efficient in this scenario of appliance energy consumption prediction? Please use simulation plots to show the how the training error varies during the training process using training (or training and validation) data. You can use mean square error (MSE) or other specified measurement for the calculation of error. Please use simulation plots to show the predicted output vs. ground truth during the model training and testing. Please discuss whether the performance of model training can be improved by adding more epochs or through other configuration changes.
+
+
 \section{Question 1.2}
+
+Keep the same settings as in Question 1.1 except that you use LSTM rather than RNN. Please use simulation plots to show how the training error varies over time, and use simulation plots to show the predicted output vs. ground truth during the model training and testing. Compare the performance with that of RNN regarding execution time and prediction error during the test.
+
+\chapter{Question 2}
 
 \section{Question 2.1}
 
+Is the federated learning efficient in this scenario of appliance classification? Please use simulation plots to show the classification accuracy during the training process using training (or training and validation) data, and show the classification accuracy of the trained model using test data. Please discuss whether the accuracy during the training and testing can be improved by adding more epochs or through other configuration changes.
+
 \section{Question 2.2}
+
+The accuracy in Question 2.1 manifests how the model works for all the appliance as a whole.You also need to show how the classification works for each appliance. To do so, you need to generate the confusion matrix of the classification result, both for the model training and testing. The confusion matrix should present the classification accuracy for each appliance.
 
 \section{Question 2.3}
 
-\section{Conclusion}
+Keep the same settings as in Question 2.1 and 2.2, except that you use LSTM when implementing federated learning. You then show the simulation plots as required in Question 2.1 and 2.2, and compare with the results when using RNN.
+
+\chapter{Conclusion}
 
 
 \bibliographystyle{plain}
