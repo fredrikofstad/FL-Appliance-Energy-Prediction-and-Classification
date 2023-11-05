@@ -4,7 +4,10 @@ from sklearn.model_selection import train_test_split
 
 data_path = "../data/"
 intervals = 96  # amount of quarter hours in a day
+appliance_mapping = {}
 appliance_names = pd.read_csv(data_path+"Consumer1.csv").columns[2:].tolist()
+for i, appliance in enumerate(appliance_names):
+    appliance_mapping[appliance] = i
 
 
 def read_to_df(index: int):
@@ -69,8 +72,13 @@ def create_dataset(dataframe):
     return train_test_split(data, appliance_labels, test_size=0.2, random_state=5460)
 
 
+def get_appliance_names():
+    return appliance_names
+
+
 if __name__ == "__main__":
     df = read_to_df(4)
     df_sum = sum_energy_consumption(df)
-    io_pairs = create_io_pairs(df_sum)
+    x_train, x_test, y_train, y_test = create_dataset(df_sum)
+    print(y_test)
 
