@@ -32,8 +32,6 @@ class Household:
         self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     def train(self, epochs=10, batch_size=1):
-        print(self.data_train)
-        print(self.y_train_encoded)
         X_train = np.array(self.data_train).reshape(-1, 1)
         self.model.fit(
             X_train,
