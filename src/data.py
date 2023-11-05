@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
-data_path = "../data/"
+data_path = "./data/"
 intervals = 96  # amount of quarter hours in a day
 appliance_mapping = {}
 appliance_names = pd.read_csv(data_path+"Consumer1.csv").columns[2:].tolist()
