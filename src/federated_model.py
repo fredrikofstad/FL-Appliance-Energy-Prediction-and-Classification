@@ -1,18 +1,21 @@
+import importlib
 import tensorflow as tf
 import tensorflow_federated as tff
 from preprocess import *
 import data
-from config import *
-
+import config
 
 def train():
-    epochs = NUM_EPOCHS
-    batch_size = BATCH_SIZE
-    shuffle_buffer = SHUFFLE_BUFFER
-    prefetch_buffer = PREFETCH_BUFFER
-    seq_length = SEQ_LENGTH
-    input_size = INPUT_SIZE
-    output_size = OUTPUT_SIZE
+    # reload config incase changes were made
+    importlib.reload(config)
+    # get hyperparameters from config
+    epochs = config.NUM_EPOCHS
+    batch_size = config.BATCH_SIZE
+    shuffle_buffer = config.SHUFFLE_BUFFER
+    prefetch_buffer = config.PREFETCH_BUFFER
+    seq_length = config.SEQ_LENGTH
+    input_size = config.INPUT_SIZE
+    output_size = config.OUTPUT_SIZE
 
     consumer_data = {}
 
