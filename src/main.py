@@ -1,5 +1,5 @@
 import importlib
-import federated_model as model
+import fl_prediction as model
 import plotting as plot
 
 importlib.reload(model)

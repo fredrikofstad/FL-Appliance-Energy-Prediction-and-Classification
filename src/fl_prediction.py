@@ -28,8 +28,8 @@ def train(network="RNN"):
 
     processed_data = [prepare_tensors(consumer_data[name_list[i]]) for i in range(1, 50)]
 
-    input_data_list = [processed_data[i][0].numpy() for i in range(49)]
-    target_data_list = [processed_data[i][1].numpy() for i in range(49)]
+    input_data_list = [processed_data[i][0].numpy() for i in range(1, 50)]
+    target_data_list = [processed_data[i][1].numpy() for i in range(1, 50)]
 
     num_clients = len(input_data_list)
 
@@ -84,7 +84,18 @@ def train(network="RNN"):
         loss_values.append(loss)
         print(f"Metrics for round {round_num}: {train_metrics}")
 
-    return loss_values
+    weights = train_state.model_weights
+
+    def create_inference_model():
+        # Using the same architecture as the training model
+        return create_keras_model()
+
+    inference_model = create_inference_model()
+    tff.learning.models.assign_weights_to_keras_model(inference_model, weights)
+
+    predicted_values = inference_model.predict(input_data_list)
+
+    return loss_values, predicted_values, target_data_list
 
 
 if __name__ == "__main__":
