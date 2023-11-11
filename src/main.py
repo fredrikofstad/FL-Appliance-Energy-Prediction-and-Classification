@@ -1,10 +1,8 @@
-from household import Household
+import importlib
+import federated_model as model
+import plotting as plot
 
-if __name__ == "__main__":
-    h1 = Household(1)
-    h1.build_classifier()
-    h1.train(epochs=100)
-    loss, accuracy = h1.evaluate()
-    print(f"Accuracy: {accuracy}")
+importlib.reload(model)
+loss_values = model.train("RNN")
 
-
+plot.make_plot("RNN Loss per epoch", loss_values)
