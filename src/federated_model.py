@@ -17,6 +17,8 @@ def train(network="RNN"):
     seq_length = config.SEQ_LENGTH
     input_size = config.INPUT_SIZE
     output_size = config.OUTPUT_SIZE
+    client_learning_rate = config.CLIENT_LEARNING_RATE
+    server_learning_rate = config.SERVER_LEARNING_RATE
 
     consumer_data = {}
 
@@ -67,8 +69,8 @@ def train(network="RNN"):
 
     training_process = tff.learning.algorithms.build_weighted_fed_avg(
         model_fn,
-        client_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=0.02),
-        server_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=1.0))
+        client_optimizer_fn=lambda: tf.keras.optimizers.SGD(client_learning_rate),
+        server_optimizer_fn=lambda: tf.keras.optimizers.SGD(server_learning_rate))
 
     train_state = training_process.initialize()
 
