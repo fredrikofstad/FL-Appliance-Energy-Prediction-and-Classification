@@ -5,7 +5,8 @@ from preprocess import *
 import data
 import config
 
-def train():
+
+def train(network="RNN"):
     # reload config incase changes were made
     importlib.reload(config)
     # get hyperparameters from config
@@ -43,15 +44,21 @@ def train():
 
     federated_train_data = client_datasets
 
-    def create_keras_model2():
-        model = tf.keras.models.Sequential([
-            tf.keras.layers.LSTM(64, input_shape=(seq_length, input_size)),
-            tf.keras.layers.Dense(output_size, activation="linear")
-        ])
+    def create_keras_model():
+        if network == "LSRM":
+            model = tf.keras.models.Sequential([
+                tf.keras.layers.LSTM(64, input_shape=(seq_length, input_size)),
+                tf.keras.layers.Dense(output_size, activation="linear")
+            ])
+        else:
+            model = tf.keras.models.Sequential([
+                tf.keras.layers.SimpleRNN(64, input_shape=(seq_length, input_size)),
+                tf.keras.layers.Dense(output_size, activation="linear")
+            ])
         return model
 
     def model_fn():
-        keras_model = create_keras_model2()
+        keras_model = create_keras_model()
         return tff.learning.models.from_keras_model(
             keras_model,
             input_spec=federated_train_data[0].element_spec,
@@ -70,6 +77,7 @@ def train():
         train_state = result.state
         train_metrics = result.metrics
         print('round {:2d}, metrics={}'.format(round_num, train_metrics))
+
 
 if __name__ == "__main__":
     train()
