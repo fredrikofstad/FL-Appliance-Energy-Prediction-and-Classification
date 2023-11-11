@@ -1,11 +1,19 @@
 import tensorflow as tf
 import tensorflow_federated as tff
 from preprocess import *
-from config import *
 import data
+from config import *
 
 
 def train():
+    epochs = NUM_EPOCHS
+    batch_size = BATCH_SIZE
+    shuffle_buffer = SHUFFLE_BUFFER
+    prefetch_buffer = PREFETCH_BUFFER
+    seq_length = SEQ_LENGTH
+    input_size = INPUT_SIZE
+    output_size = OUTPUT_SIZE
+
     consumer_data = {}
 
     dataframe, name_list = data.create_df()
@@ -59,3 +67,6 @@ def train():
         train_state = result.state
         train_metrics = result.metrics
         print('round {:2d}, metrics={}'.format(round_num, train_metrics))
+
+if __name__ == "__main__":
+    train()
