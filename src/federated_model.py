@@ -1,18 +1,11 @@
 import tensorflow as tf
 import tensorflow_federated as tff
 from preprocess import *
+from config import *
 import data
 
 
-def train(
-        epochs=2,
-        batch_size=96,
-        shuffle_buffer=1,
-        prefetch_buffer=1,
-        seq_length=96,
-        input_size=7,
-        output_size=1
-):
+def train():
     consumer_data = {}
 
     dataframe, name_list = data.create_df()
