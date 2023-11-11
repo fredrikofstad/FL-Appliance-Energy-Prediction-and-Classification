@@ -74,11 +74,16 @@ def train(network="RNN"):
 
     train_state = training_process.initialize()
 
+    loss_values = []
+
     for round_num in range(epochs):
         result = training_process.next(train_state, federated_train_data)
         train_state = result.state
         train_metrics = result.metrics
+        loss_values.append(train_metrics['loss'])
         print('round {:2d}, metrics={}'.format(round_num, train_metrics))
+
+    return loss_values
 
 
 if __name__ == "__main__":
