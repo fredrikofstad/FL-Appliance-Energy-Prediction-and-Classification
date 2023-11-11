@@ -80,7 +80,8 @@ def train(network="RNN"):
         result = training_process.next(train_state, federated_train_data)
         train_state = result.state
         train_metrics = result.metrics
-        #loss_values.append(train_metrics['loss'])
+        loss = train_metrics['client_work']['train']['loss']
+        loss_values.append(loss)
         print(f"Metrics for round {round_num}: {train_metrics}")
 
     return loss_values
