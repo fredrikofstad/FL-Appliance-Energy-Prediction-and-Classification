@@ -1,0 +1,40 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{chocolate2267451}{RGB}{226,74,51}
+\definecolor{dimgray85}{RGB}{85,85,85}
+\definecolor{gainsboro229}{RGB}{229,229,229}
+
+\begin{axis}[
+axis background/.style={fill=gainsboro229},
+axis line style={white},
+tick align=outside,
+tick pos=left,
+title={Training Loss per Round},
+x grid style={white},
+xlabel=\textcolor{dimgray85}{Round},
+xmajorgrids,
+xmin=-0.45, xmax=9.45,
+xtick style={color=dimgray85},
+y grid style={white},
+ylabel=\textcolor{dimgray85}{Loss},
+ymajorgrids,
+ymin=0.198678553104401, ymax=0.242795675992966,
+ytick style={color=dimgray85}
+]
+\addplot [semithick, chocolate2267451]
+table {%
+0 0.240790352225304
+1 0.209920555353165
+2 0.205377772450447
+3 0.203536123037338
+4 0.202531784772873
+5 0.20189842581749
+6 0.201459735631943
+7 0.201135396957397
+8 0.200884535908699
+9 0.200683876872063
+};
+\end{axis}
+
+\end{tikzpicture}
