@@ -2,55 +2,103 @@
 
 \input{style/import}
 
-
 \title{Appliance Energy Consumption Prediction and Classification Using Federated Learning}
 \authors{F. Ofstad, Z. Shan, R. Syed, H. Zhang}
 
-\date{}
+\addbibresource{bibliography.bib}
 
 \begin{document}
 
 \projectfrontpage
 
 
-
 \chapter{Introducton}
 
+The purpose of this report is to construct a Federated Learning model, which aggregates the resulting parameters from client models. The client models have two tasks:
+\begin{enumerate}
+    \item to train a model to predict the energy consumption for appliances in a household
+    \item Train a model to classify the type of appliance based on their energy consumption.    
+\end{enumerate}
 
-\chapter{Simulation}
-
-
-
-\chapter{Question 1}
-
-You need to use both LSTM and another RNN (e.g., a vanilla RNN) when implementing federated learning for both the prediction and classification model. You will determine how many layers and how many nodes in each layer when designing the model structure. The following questions should be considered in your assignment report.
-
-\section{Question 1.1}
-
-Is the federated learning efficient in this scenario of appliance energy consumption prediction? Please use simulation plots to show the how the training error varies during the training process using training (or training and validation) data. You can use mean square error (MSE) or other specified measurement for the calculation of error. Please use simulation plots to show the predicted output vs. ground truth during the model training and testing. Please discuss whether the performance of model training can be improved by adding more epochs or through other configuration changes.
+To this end, we used the tensorflow package for Python when creating the client models using Keras, and the extension tensorflow federated for the aggregating model. The steps the program takes are as follows:
 
 
-\section{Question 1.2}
+\section{Pre-processing the data}
+We first convert the provided excel file into csv files for each household. This is done to conceptually emulate FL as each client should only have access to their own data, and because CSV files are generally faster to load in python.
 
-Keep the same settings as in Question 1.1 except that you use LSTM rather than RNN. Please use simulation plots to show how the training error varies over time, and use simulation plots to show the predicted output vs. ground truth during the model training and testing. Compare the performance with that of RNN regarding execution time and prediction error during the test.
+The clients themselves utilize LSTM and RNN models with n layers and n nodes #TODO Fill in
 
-\chapter{Question 2}
+The federated model runs these clients and extracts the averaged weights which it used for the aggregated model.
 
-\section{Question 2.1}
 
-Is the federated learning efficient in this scenario of appliance classification? Please use simulation plots to show the classification accuracy during the training process using training (or training and validation) data, and show the classification accuracy of the trained model using test data. Please discuss whether the accuracy during the training and testing can be improved by adding more epochs or through other configuration changes.
 
-\section{Question 2.2}
+\begin{figure}[h]
+  \centering
+    \input{report/figures/plot}
+  \caption{Test plot using tikzplotlib}
+\end{figure}
 
-The accuracy in Question 2.1 manifests how the model works for all the appliance as a whole.You also need to show how the classification works for each appliance. To do so, you need to generate the confusion matrix of the classification result, both for the model training and testing. The confusion matrix should present the classification accuracy for each appliance.
 
-\section{Question 2.3}
 
-Keep the same settings as in Question 2.1 and 2.2, except that you use LSTM when implementing federated learning. You then show the simulation plots as required in Question 2.1 and 2.2, and compare with the results when using RNN.
+\chapter{Predicting Appliance Energy Cosumption}
+
+The following section tests the federated learning efficiency when predicting appliance energy consumption.
+
+\section{Preditcion with RNN}
+
+\begin{figure}[h]
+  \centering
+    %\input{report/figures/training_error_1.1}
+  \caption{Simulation plot of the training error in MSE}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    %\input{report/figures/}
+  \caption{Simulation plot comparing the predicted output with the ground truth for training}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    %\input{report/figures/}
+  \caption{Simulation plot comparing the predicted output with the ground truth for testing}
+\end{figure}
+
+
+%Is the federated learning efficient in this scenario of appliance energy consumption prediction? Please discuss whether the performance of model training can be improved by adding more epochs or through other configuration changes.
+
+
+\section{Prediction with LSTM}
+
+The following models use the same configurations as the previous model, except the trainer uses LSTM instead of regular RNN.
+
+ %Compare the performance with that of RNN regarding execution time and prediction error during the test.
+
+\chapter{Classifying Appliance Types}
+
+This section reports the results of the classification model: determining the types of application based on the daily consumption of an appliance.
+
+\section{Classification using Regular RNN}
+
+%Is the federated learning efficient in this scenario of appliance classification? Please use simulation plots to show the classification accuracy during the training process using training (or training and validation) data, and show the classification accuracy of the trained model using test data. Please discuss whether the accuracy during the training and testing can be improved by adding more epochs or through other configuration changes.
+
+\section{Confusion Matrix}
+
+%The accuracy in Question 2.1 manifests how the model works for all the appliance as a whole.You also need to show how the classification works for each appliance. To do so, you need to generate the confusion matrix of the classification result, both for the model training and testing. The confusion matrix should present the classification accuracy for each appliance.
+
+\section{Classification using LSTM}
+
+%Keep the same settings as in Question 2.1 and 2.2, except that you use LSTM when implementing federated learning. You then show the simulation plots as required in Question 2.1 and 2.2, and compare with the results when using RNN.
 
 \chapter{Conclusion}
 
+Why is it so hard to make intuitive code that just works?? Google, you're a multi-billion dollar company.. please! 
+\newpage
 
-\bibliographystyle{plain}
+\nocite{tensorflow2015-whitepaper}
+\nocite{dataset}
+
+\printbibliography{}
+
 \vspace*{10mm}
 \end{document}
