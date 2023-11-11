@@ -28,8 +28,8 @@ def train(network="RNN"):
 
     processed_data = [prepare_tensors(consumer_data[name_list[i]]) for i in range(1, 50)]
 
-    input_data_list = [processed_data[i][0].numpy() for i in range(1, 50)]
-    target_data_list = [processed_data[i][1].numpy() for i in range(1, 50)]
+    input_data_list = [processed_data[i][0].numpy() for i in range(49)]
+    target_data_list = [processed_data[i][1].numpy() for i in range(49)]
 
     num_clients = len(input_data_list)
 
