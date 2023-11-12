@@ -12,56 +12,57 @@
 \projectfrontpage
 
 
-\chapter{Introducton}
+\chapter{Introduction}
 
-The purpose of this report is to construct a Federated Learning model, which aggregates the resulting parameters from client models. The client models have two tasks:
+The purpose of this report is to construct a Federated Learning model, which aggregates the resulting weights from client models. The client models have two tasks:
 \begin{enumerate}
     \item to train a model to predict the energy consumption for appliances in a household
     \item Train a model to classify the type of appliance based on their energy consumption.    
 \end{enumerate}
 
-To this end, we used the tensorflow package for Python when creating the client models using Keras, and the extension tensorflow federated for the aggregating model. The steps the program takes are as follows:
+To this end, we used the tensorflow package for Python when creating the client models using Keras, and the extension tensorflow federated for the aggregating model. The steps the program takes are as follows. 
 
 
 \section{Pre-processing the data}
 We first convert the provided excel file into csv files for each household. This is done to conceptually emulate FL as each client should only have access to their own data, and because CSV files are generally faster to load in python.
 
-The clients themselves utilize LSTM and RNN models with n layers and n nodes #TODO Fill in
+Then for the prediction model, the data is processed as follows:
+The applications energy consumption is summed up per period, creating a time-series dataset. This data set is segmented into pairs of seven day inputs, with the eight day being the output.
+
+For the classification model.
+
+\section{Training the models}
+
+The clients themselves utilize RNN and LSTM models with n layers and n nodes #TODO-FILLIN
 
 The federated model runs these clients and extracts the averaged weights which it used for the aggregated model.
 
 
 
-\begin{figure}[h]
-  \centering
-    \input{report/figures/plot}
-  \caption{Test plot using tikzplotlib}
-\end{figure}
-
-
-
-\chapter{Predicting Appliance Energy Cosumption}
+\chapter{Predicting Appliance Energy Consumption}
 
 The following section tests the federated learning efficiency when predicting appliance energy consumption.
 
-\section{Preditcion with RNN}
+\section{Prediction with RNN}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-    %\input{report/figures/training_error_1.1}
+    \input{report/figures/pred-rnn-loss}
   \caption{Simulation plot of the training error in MSE}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-    %\input{report/figures/}
-  \caption{Simulation plot comparing the predicted output with the ground truth for training}
+    \input{report/figures/pred-rnn-train}
+  \caption{Simulation plot of the training error in MSE}
 \end{figure}
 
-\begin{figure}[h]
+I dunno mannnn
+
+\begin{figure}[H]
   \centering
-    %\input{report/figures/}
-  \caption{Simulation plot comparing the predicted output with the ground truth for testing}
+    \input{report/figures/pred-rnn-test}
+  \caption{Simulation plot comparing the predicted value with the ground truth}
 \end{figure}
 
 
@@ -71,6 +72,19 @@ The following section tests the federated learning efficiency when predicting ap
 \section{Prediction with LSTM}
 
 The following models use the same configurations as the previous model, except the trainer uses LSTM instead of regular RNN.
+
+\begin{figure}[H]
+  \centering
+    \input{report/figures/pred-lstm-loss}
+  \caption{Simulation plot of the training error in MSE}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+    \input{report/figures/pred-lstm-test}
+  \caption{Simulation plot comparing the predicted value with the ground truth}
+\end{figure}
 
  %Compare the performance with that of RNN regarding execution time and prediction error during the test.
 
@@ -92,7 +106,7 @@ This section reports the results of the classification model: determining the ty
 
 \chapter{Conclusion}
 
-Why is it so hard to make intuitive code that just works?? Google, you're a multi-billion dollar company.. please! 
+In conclusion, Why is it so hard to make intuitive code that just works?? Google, you're a multi-billion dollar company.. please! 
 \newpage
 
 \nocite{tensorflow2015-whitepaper}
