@@ -1,5 +1,5 @@
 import importlib
-import fl_prediction as model
+import prediction as model
 import plotting as plot
 
 importlib.reload(model)
