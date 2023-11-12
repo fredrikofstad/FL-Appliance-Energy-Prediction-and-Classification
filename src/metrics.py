@@ -1,4 +1,6 @@
 import tensorflow as tf
+
+import config
 class MulticlassTruePositives(tf.keras.metrics.Metric):
     def __init__(self, name='multiclass_true_positives', num_classes=10, **kwargs):
         super(MulticlassTruePositives, self).__init__(name=name, **kwargs)
@@ -38,9 +40,9 @@ class MulticlassTruePositives(tf.keras.metrics.Metric):
 
 
 class TruePred(tf.keras.metrics.Metric):
-    def __init__(self, name='get_true_pred', batch_size=64, output_size=96, **kwargs):
+    def __init__(self, name='get_true_pred', **kwargs):
         super(TruePred, self).__init__(name=name, **kwargs)
-        self.true_positives = self.add_weight(name='tp', shape=(batch_size, output_size, 2), initializer='zeros')
+        self.true_positives = self.add_weight(name='tp', shape=(config.BATCH_SIZE, config.OUTPUT_SIZE, 2), initializer='zeros')
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         values = tf.cast(y_pred, 'float32'), tf.cast(y_true, 'float32')

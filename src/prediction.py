@@ -68,9 +68,7 @@ def train(network="RNN"):
             keras_model,
             input_spec=federated_train_data[0].element_spec,
             loss=tf.keras.losses.MeanSquaredError(),
-            metrics=[tf.keras.metrics.SparseCategoricalAccuracy(), TruePred(name='get_true_pred',
-                                                                            batch_size=batch_size,
-                                                                            output_size=output_size, )])
+            metrics=[tf.keras.metrics.SparseCategoricalAccuracy(), TruePred(name='get_true_pred')])
 
     training_process = tff.learning.algorithms.build_weighted_fed_avg(
         model_fn,
@@ -102,9 +100,7 @@ def train(network="RNN"):
             keras_model,
             input_spec=federated_train_data[0].element_spec,
             loss=tf.keras.losses.MeanSquaredError(),
-            metrics=[tf.keras.metrics.MeanSquaredError(), TruePred(name='get_true_pred',
-                                                                   batch_size=batch_size,
-                                                                   output_size=output_size, )])
+            metrics=[tf.keras.metrics.MeanSquaredError(), TruePred(name='get_true_pred')])
 
     evaluation_process = tff.learning.algorithms.build_fed_eval(model_fn)
 
