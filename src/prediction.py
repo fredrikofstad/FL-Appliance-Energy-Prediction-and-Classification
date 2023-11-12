@@ -67,7 +67,7 @@ def train(network="RNN"):
         return tff.learning.models.from_keras_model(
             keras_model,
             input_spec=federated_train_data[0].element_spec,
-            loss=tf.keras.losses.MeanSquaredError,
+            loss=tf.keras.losses.MeanSquaredError(),
             metrics=[tf.keras.metrics.SparseCategoricalAccuracy(), TruePred(name='get_true_pred',
                                                                             batch_size=batch_size,
                                                                             output_size=output_size, )])
