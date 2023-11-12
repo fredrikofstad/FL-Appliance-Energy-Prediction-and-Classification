@@ -1,0 +1,43 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{chocolate2267451}{RGB}{226,74,51}
+\definecolor{dimgray85}{RGB}{85,85,85}
+\definecolor{gainsboro229}{RGB}{229,229,229}
+
+\begin{axis}[
+axis background/.style={fill=gainsboro229},
+axis line style={white},
+tick align=outside,
+tick pos=left,
+title={Loss Over Epochs (LSTM)},
+x grid style={white},
+xlabel=\textcolor{dimgray85}{Epoch (every 10th)},
+xmajorgrids,
+xmin=-0.4, xmax=8.4,
+xtick style={color=dimgray85},
+xtick={0,1,2,3,4,5,6,7,8},
+xtick={0,1,2,3,4,5,6,7,8},
+xticklabels={10,20,30,40,50,60,70,80,90},
+xticklabels={10,20,30,40,50,60,70,80,90},
+y grid style={white},
+ylabel=\textcolor{dimgray85}{Loss (MSE)},
+ymajorgrids,
+ymin=0.189402960240841, ymax=0.273933596909046,
+ytick style={color=dimgray85}
+]
+\addplot [semithick, chocolate2267451, mark=*, mark size=3, mark options={solid}]
+table {%
+0 0.27009129524231
+1 0.239204823970795
+2 0.21332985162735
+3 0.201177880167961
+4 0.196588724851608
+5 0.194829702377319
+6 0.194046154618263
+7 0.193602621555328
+8 0.193245261907578
+};
+\end{axis}
+
+\end{tikzpicture}
