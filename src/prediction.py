@@ -90,7 +90,6 @@ def train(network="RNN"):
 
     # training
     epochs = 1
-    batch = 1
     shuffle_buffer = 1
     prefetch_buffer = 1
 
