@@ -13,27 +13,34 @@
 
 
 \chapter{Introduction}
+Appliance energy consumption is important for the stability of the smart grid system in a community. The prediction of energy consumption can help avoid the peak load. However, people in a community may not want to share their own data of energy consumption because of privacy protection. On the other hand, there may not be a server with enough capacity in the community. Therefore, Federated learning (FL) is a good approach for this scenario.
 
-The purpose of this report is to construct a Federated Learning model, which aggregates the resulting weights from client models. The client models have two tasks:
+The purpose of this report is to construct a FL model, which aggregates the resulting weights from client models. The client models have two tasks:
 \begin{enumerate}
-    \item to train a model to predict the energy consumption for appliances in a household
+    \item Train a model to predict the energy consumption for appliances in a household；
     \item Train a model to classify the type of appliance based on their energy consumption.    
 \end{enumerate}
 
-To this end, we used the tensorflow package for Python when creating the client models using Keras, and the extension tensorflow federated for the aggregating model. The steps the program takes are as follows. 
+In both prediction and classification, we apply RNN and LSTM in implementing FL models. And then the performance of prediction and accuracy of classification of these two methods are analyzed respectively.
 
+The dataset is an excel file includes $50$ sheets storing the energy consumption data of $50$ households. Each sheet records the $10$ appliance energy consumption for one year by period of every $15$ minutes. Besides, each household is regarded as a client that run one part of the distributed learning for FL model.
+
+
+\chapter{Methodology}
+To this end, we use Tensorflow package for Python when creating the client models using Keras, and the extension tensorflow federated for the aggregating model. The steps the program takes are as follows. 
 
 \section{Pre-processing the data}
-We first convert the provided excel file into csv files for each household. This is done to conceptually emulate FL as each client should only have access to their own data, and because CSV files are generally faster to load in python.
+We first convert and segment the provided excel file into CSV files for each household. This is done to conceptually emulate FL as each client should only have access to their own data, and because CSV files are generally faster to load in Python.
 
 Then for the prediction model, the data is processed as follows:
-The applications energy consumption is summed up per period, creating a time-series dataset. This data set is segmented into pairs of seven day inputs, with the eight day being the output.
+The applications energy consumption is summed up per period, creating a time-series dataset. This data set is segmented into pairs of seven days as inputs, with the $8$-th day being the output. In this way, we make data of every $8$ days as a sub-dataset. Then $20\%$ of the sub-datasets of each household are randomly selected for testing.
 
-For the classification model.
+For the classification model, we focus on the energy consumption of appliance based on one day. As a result, every day's data ($96$ samples) is regarded as sub-dataset. So we can easily randomly choose $20\%$ of the days as test data.
 
 \section{Training the models}
 
 The clients themselves utilize RNN and LSTM models with n layers and n nodes #TODO-FILLIN
+In prediction, we use $64$ nodes in both RNN and LSTM and only one hidden layer. 
 
 The federated model runs these clients and extracts the averaged weights which it used for the aggregated model.
 
@@ -51,13 +58,53 @@ The following section tests the federated learning efficiency when predicting ap
   \caption{Simulation plot of the training error in MSE}
 \end{figure}
 
-\begin{figure}[H]
-  \centering
-    \input{report/figures/pred-rnn-train}
-  \caption{Simulation plot of the training error in MSE}
-\end{figure}
+As expected, the initial epochs provided the most reduction in loss, which starts to flatten out after around 40 epochs. After this there is minimal gain to be had by continuing the training. 
 
-I dunno mannnn
+For the execution time, we found that adjusting the batch size contributed the most. Starting out with a small batch size extended the training time considerably, to the point where the run-time would timeout. But values in the 64 range, led to an execution time of 18min for 100 epochs.  
+
+\begin{figure*}
+        \centering
+        \begin{subfigure}[b]{0.475\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/RNN-pred/rnn1.png}
+            {{\small Epoch 1}}    
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}  
+            \centering 
+            \includegraphics[width=\textwidth]{figures/RNN-pred/rnn2.png}
+            {{\small Epoch 2}}    
+        \end{subfigure}
+        \vskip\baselineskip
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{figures/RNN-pred/rnn3.png}
+            {{\small Epoch 3}}    
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{figures/RNN-pred/rnn16.png}
+            {{\small Epoch 16}}
+        \end{subfigure}
+        \vskip\baselineskip
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{figures/RNN-pred/rnn50.png}
+            {{\small Epoch 50}}    
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{figures/RNN-pred/rnn98.png}
+            {{\small Epoch 98}}
+        \end{subfigure}
+        \caption{RNN Prediction vs Ground Truth during different epochs in training} 
+        \label{rnn-pred}
+\end{figure*}
+
+Figure \ref{rnn-pred} shows how the prediction of the energy value changes throughout the training epochs. Similar to the results shown in figure 1, the biggest gains are seen in the first couple of epochs. We can see that there isn't much difference in the prediction produced by the model in epoch 50 and 98. While some patterns are captured, The model seems to under-predict the energy.
+
 
 \begin{figure}[H]
   \centering
@@ -79,6 +126,39 @@ The following models use the same configurations as the previous model, except t
   \caption{Simulation plot of the training error in MSE}
 \end{figure}
 
+The LSTM model starts with a higher initial loss, and takes more epochs than the RNN model before the loss gradient flattens out.
+
+
+\begin{figure*}
+        \centering
+        \begin{subfigure}[b]{0.475\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/LSTM-Pred/plot3.png}
+            {{\small Epoch 3}}    
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}  
+            \centering 
+            \includegraphics[width=\textwidth]{figures/LSTM-Pred/plot16.png}
+            {{\small Epoch 16}}    
+        \end{subfigure}
+        \vskip\baselineskip
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{figures/LSTM-Pred/plot50.png}
+            {{\small Epoch 50}}    
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{figures/LSTM-Pred/plot98.png}
+            {{\small Epoch 98}}    
+        \end{subfigure}
+        \caption{LSTM Prediction vs Ground Truth during different epochs in training} 
+        \label{lstm-pred}
+\end{figure*}
+
+Figure \ref{lstm-pred} shows that by epoch 16, the LSTM model already produces better predictions than the all the RNN models.
 
 \begin{figure}[H]
   \centering
@@ -94,9 +174,28 @@ This section reports the results of the classification model: determining the ty
 
 \section{Classification using Regular RNN}
 
+\begin{figure}[H]
+  \centering
+    \input{report/figures/class-rnn-accuracy}
+  \caption{Plot showing the change in accuracy during training}
+\end{figure}
+
 %Is the federated learning efficient in this scenario of appliance classification? Please use simulation plots to show the classification accuracy during the training process using training (or training and validation) data, and show the classification accuracy of the trained model using test data. Please discuss whether the accuracy during the training and testing can be improved by adding more epochs or through other configuration changes.
 
 \section{Confusion Matrix}
+
+\begin{figure}[H]
+  \centering
+    \input{report/figures/class-rnn-confusion-train}
+  \caption{Confusion Matrix for the training data}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \input{report/figures/class-rnn-confusion-test}
+  \captionConfusion{ Matrix for the test data}
+\end{figure}
+
 
 %The accuracy in Question 2.1 manifests how the model works for all the appliance as a whole.You also need to show how the classification works for each appliance. To do so, you need to generate the confusion matrix of the classification result, both for the model training and testing. The confusion matrix should present the classification accuracy for each appliance.
 
@@ -104,10 +203,29 @@ This section reports the results of the classification model: determining the ty
 
 %Keep the same settings as in Question 2.1 and 2.2, except that you use LSTM when implementing federated learning. You then show the simulation plots as required in Question 2.1 and 2.2, and compare with the results when using RNN.
 
+\begin{figure}[H]
+  \centering
+    \input{report/figures/class-lstm-accuracy}
+  \caption{Plot showing the change in accuracy during training}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \input{report/figures/class-lstm-confusion-train}
+  \captionConfusion {Matrix for the training data}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \input{report/figures/class-lstm-confusion-test}
+  \captionConfusion {Matrix for the test data}
+\end{figure}
+
+
+
 \chapter{Conclusion}
 
-In conclusion, Why is it so hard to make intuitive code that just works?? Google, you're a multi-billion dollar company.. please! 
-\newpage
+In both the prediction model and classification model, we can see that LSTM outperforms RNN. LSTM, however, has a more complex architecture, and takes more epochs and execution time. For the prediction model, this added complexity is well worth the added execution time as the results are considerable better at picking up the patterns as evident when comparing them to the ground truth. For the classification model, this distinction isn't as clear cut. We can see that the LSTM model still outperforms RNN in accuracy, but this marginal gain is not as significant. This might be due to how the classification model only considers a day, instead of having a whole week for its time series. LSTM's ability to retain long term dependencies in the data is therefore not as advantageous as in the prediction model.
 
 \nocite{tensorflow2015-whitepaper}
 \nocite{dataset}
