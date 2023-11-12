@@ -24,7 +24,7 @@ point meta max=6638,
 point meta min=0,
 tick align=outside,
 tick pos=left,
-title={Confusion Matrix (LSTM)},
+title={Confusion Matrix (RNN)},
 x grid style={white},
 xlabel=\textcolor{dimgray85}{Predicted},
 xmajorgrids,
@@ -64,7 +64,7 @@ yticklabels={
   Refrigerator
 }
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=10, ymin=10, ymax=0] {figures/class-lstm-confusion-test-000.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=10, ymin=10, ymax=0] {figures/class-rnn-confusion-test-000.png};
 \end{axis}
 
 \end{tikzpicture}
