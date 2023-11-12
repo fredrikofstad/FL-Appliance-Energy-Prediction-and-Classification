@@ -57,7 +57,7 @@ def train(network="RNN"):
             ])
         else:
             model = tf.keras.models.Sequential([
-                tf.keras.layers.SimpleRNN(64, input_shape=(input_size, seq_length)),
+                tf.keras.layers.SimpleRNN(64, input_shape=(seq_length, input_size)),
                 tf.keras.layers.Dense(output_size, activation="linear")
             ])
         return model
