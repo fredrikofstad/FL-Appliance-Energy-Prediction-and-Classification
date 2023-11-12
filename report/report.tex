@@ -30,20 +30,36 @@ The dataset is an excel file includes $50$ sheets storing the energy consumption
 To this end, we use Tensorflow package for Python when creating the client models using Keras, and the extension tensorflow federated for the aggregating model. The steps the program takes are as follows. 
 
 \section{Pre-processing the data}
-We first convert and segment the provided excel file into CSV files for each household. This is done to conceptually emulate FL as each client should only have access to their own data, and because CSV files are generally faster to load in Python.
+We first convert and segment the provided excel file into CSV files for each household. This is done to conceptually emulate FL as each client should only have access to their own data, and because CSV file is cleaned data format and generally faster to load in Python.
 
 Then for the prediction model, the data is processed as follows:
-The applications energy consumption is summed up per period, creating a time-series dataset. This data set is segmented into pairs of seven days as inputs, with the $8$-th day being the output. In this way, we make data of every $8$ days as a sub-dataset. Then $20\%$ of the sub-datasets of each household are randomly selected for testing.
+the applications energy consumption is summed up per period, creating a time-series dataset. This dataset is segmented into pairs of seven days as inputs, with the $8$-th day being the output. In this way, we make data of every $8$ days as a sub-dataset. Then $20\%$ of the sub-datasets of each household are randomly selected for testing.
 
 For the classification model, we focus on the energy consumption of appliance based on one day. As a result, every day's data ($96$ samples) is regarded as sub-dataset. So we can easily randomly choose $20\%$ of the days as test data.
 
 \section{Training the models}
 
-The clients themselves utilize RNN and LSTM models with n layers and n nodes #TODO-FILLIN
-In prediction, we use $64$ nodes in both RNN and LSTM and only one hidden layer. 
+The clients themselves utilize RNN and LSTM models. For example:
 
-The federated model runs these clients and extracts the averaged weights which it used for the aggregated model.
+\texttt{SimpleRNN(64, input\_shape=(seq\_length, input\_size))}
 
+\texttt{Dense(output\_size, activation="linear")}
+\vspace{\baselineskip}
+
+In prediction, we use $64$ nodes in both RNN and LSTM and only one hidden layer. The seq\_length is $96$ denoting data recorded every $15$ minutes every day. And input\_size is $7$ which means $7$ days as input. Then Dense which is a fully connected layer is applied. The output\_size is $1$ representing the $8$-th day and activation function here is linear.
+
+In classification, parameters are the same for both RNN and LSTM except the activation function - sigmoid function is used here since we want to classify the type of appliance. For this classification task, sparse categorical crossentropy is used as the loss function.
+
+The federated model runs these clients and extracts the averaged weights which it used for the aggregated model. The weighted federated averaging process is constructed in our approach. And we initialize the number of epochs as $100$ for all the clients. Besides, we set the client learning rate $0.01$ and server learning rate $0.1$.
+
+All the models were run on a T4 GPU, with 100 epochs in order to more easily compare them. The execution times are presented in the table below.
+
+
+\begin{Table}
+  \centering
+    \input{report/figures/execution}
+  \caption{\label{table} Execution times of training}
+\end{Table}
 
 
 \chapter{Predicting Appliance Energy Consumption}
@@ -58,9 +74,9 @@ The following section tests the federated learning efficiency when predicting ap
   \caption{Simulation plot of the training error in MSE}
 \end{figure}
 
-As expected, the initial epochs provided the most reduction in loss, which starts to flatten out after around 40 epochs. After this there is minimal gain to be had by continuing the training. 
+As expected, the initial epochs provided the most reduction in loss, which starts to flatten out after around $40$ epochs. After this there is minimal gain to be had by continuing the training. 
 
-For the execution time, we found that adjusting the batch size contributed the most. Starting out with a small batch size extended the training time considerably, to the point where the run-time would timeout. But values in the 64 range, led to an execution time of 18min for 100 epochs.  
+For the execution time, we found that adjusting the batch size contributed the most. Starting out with a small batch size extended the training time considerably, to the point where the run-time would timeout. But values in the $64$ range, led to an execution time of $18$min for $100$ epochs.  
 
 \begin{figure*}
         \centering
@@ -103,14 +119,15 @@ For the execution time, we found that adjusting the batch size contributed the m
         \label{rnn-pred}
 \end{figure*}
 
-Figure \ref{rnn-pred} shows how the prediction of the energy value changes throughout the training epochs. Similar to the results shown in figure 1, the biggest gains are seen in the first couple of epochs. We can see that there isn't much difference in the prediction produced by the model in epoch 50 and 98. While some patterns are captured, The model seems to under-predict the energy.
-
+Figure \ref{rnn-pred} shows how the prediction of the energy value changes throughout the training epochs. Similar to the results shown in figure $1$, the biggest gains are seen in the first couple of epochs. We can see that there isn't much difference in the prediction produced by the model in epoch $50$ and $98$. While some patterns are captured, the model seems to under-predict the energy.
 
 \begin{figure}[H]
   \centering
-    \input{report/figures/pred-rnn-test}
+    \input{report/figures/pred-lstm-test}
   \caption{Simulation plot comparing the predicted value with the ground truth}
 \end{figure}
+
+The RNN model seems to over-predict and under-predict the energy levels at different intervals. The patterns are mostly mirrored in the prediction but with a slight delay relative to the ground truth.
 
 
 %Is the federated learning efficient in this scenario of appliance energy consumption prediction? Please discuss whether the performance of model training can be improved by adding more epochs or through other configuration changes.
@@ -122,11 +139,11 @@ The following models use the same configurations as the previous model, except t
 
 \begin{figure}[H]
   \centering
-    \input{report/figures/pred-lstm-loss}
+    \input{report/figures/pred-rnn-loss}
   \caption{Simulation plot of the training error in MSE}
 \end{figure}
 
-The LSTM model starts with a higher initial loss, and takes more epochs than the RNN model before the loss gradient flattens out.
+The LSTM model starts with a higher initial loss, and takes more epochs than the RNN model before the loss gradient flattens out. Since LSTM is a more complex model, longer training time is to be expected. The final execution time was $38$m $13$s, almost double as long as the Simple RNN version.
 
 
 \begin{figure*}
@@ -158,13 +175,20 @@ The LSTM model starts with a higher initial loss, and takes more epochs than the
         \label{lstm-pred}
 \end{figure*}
 
-Figure \ref{lstm-pred} shows that by epoch 16, the LSTM model already produces better predictions than the all the RNN models.
+Figure \ref{lstm-pred} shows that by epoch $16$, the LSTM model already produces better predictions than the all the RNN models. While the execution time, and epochs needed might be longer, the prediction more closely relates to the ground truth.
+
+
+
 
 \begin{figure}[H]
   \centering
-    \input{report/figures/pred-lstm-test}
+    \includegraphics[width=\textwidth]{report/figures/lstm-pred.png}
   \caption{Simulation plot comparing the predicted value with the ground truth}
+  \label{lstm-pred-train}
 \end{figure}
+
+The training set also confirms that the lstm model is better at capturing the correct patterns, and is overall much closer to the ground truth compared with the RNN model.
+
 
  %Compare the performance with that of RNN regarding execution time and prediction error during the test.
 
@@ -178,11 +202,16 @@ This section reports the results of the classification model: determining the ty
   \centering
     \input{report/figures/class-rnn-accuracy}
   \caption{Plot showing the change in accuracy during training}
+  \label{rnn-acc}
 \end{figure}
+
+Figure \ref{rnn-acc} shows the increase of accuracy over the training period. While it does seem to flatten out by epoch $90$, More epochs could be beneficial, but it would likely not exceed accuracy far over $0.65$.
 
 %Is the federated learning efficient in this scenario of appliance classification? Please use simulation plots to show the classification accuracy during the training process using training (or training and validation) data, and show the classification accuracy of the trained model using test data. Please discuss whether the accuracy during the training and testing can be improved by adding more epochs or through other configuration changes.
 
 \section{Confusion Matrix}
+
+The following plots show a confusion matrix for the training and test datasets. 
 
 \begin{figure}[H]
   \centering
@@ -193,13 +222,16 @@ This section reports the results of the classification model: determining the ty
 \begin{figure}[H]
   \centering
     \input{report/figures/class-rnn-confusion-test}
-  \captionConfusion{ Matrix for the test data}
+  \caption{Confusion Matrix for the test data}
 \end{figure}
+
+We can see that the easiest appliances to classify were the refrigerator and TV, and the AC in the training set. Both the Refrigerator and AC have a constant energy intake which might make this easier for the model to learn (the AC actually has constant $0$ in all the datasets). This implies that it is harder for the RNN model to learn the energy consumption of appliances that are used sporadically.
 
 
 %The accuracy in Question 2.1 manifests how the model works for all the appliance as a whole.You also need to show how the classification works for each appliance. To do so, you need to generate the confusion matrix of the classification result, both for the model training and testing. The confusion matrix should present the classification accuracy for each appliance.
 
 \section{Classification using LSTM}
+
 
 %Keep the same settings as in Question 2.1 and 2.2, except that you use LSTM when implementing federated learning. You then show the simulation plots as required in Question 2.1 and 2.2, and compare with the results when using RNN.
 
@@ -209,23 +241,29 @@ This section reports the results of the classification model: determining the ty
   \caption{Plot showing the change in accuracy during training}
 \end{figure}
 
+The LSTM model can be seen reaching a higher accuracy score at the same corresponding epochs, but also seems to flatten out around $90$. Like the Simple RNN model, a few more epochs could increase the accuracy slightly, but not considerably.
+
 \begin{figure}[H]
   \centering
     \input{report/figures/class-lstm-confusion-train}
-  \captionConfusion {Matrix for the training data}
+  \caption {Confusion Matrix for the training data}
 \end{figure}
 
 \begin{figure}[H]
   \centering
     \input{report/figures/class-lstm-confusion-test}
-  \captionConfusion {Matrix for the test data}
+  \caption {Confusion Matrix for the test data}
 \end{figure}
+
+The confusion matrix indicates that the LSTM does a better job of classifying the appliances with less false positives. The appliances that have a more stable energy consumption are still easier to classify, such as the water heater, Refrigerator, AC, and the TV. Appliances only used a couple times like the kettle, dishwasher, dryer and microwave are still the most difficult as they are confused for each other.
 
 
 
 \chapter{Conclusion}
 
-In both the prediction model and classification model, we can see that LSTM outperforms RNN. LSTM, however, has a more complex architecture, and takes more epochs and execution time. For the prediction model, this added complexity is well worth the added execution time as the results are considerable better at picking up the patterns as evident when comparing them to the ground truth. For the classification model, this distinction isn't as clear cut. We can see that the LSTM model still outperforms RNN in accuracy, but this marginal gain is not as significant. This might be due to how the classification model only considers a day, instead of having a whole week for its time series. LSTM's ability to retain long term dependencies in the data is therefore not as advantageous as in the prediction model.
+In both the prediction model and classification model, we can see that LSTM outperforms RNN. LSTM, however, has a more complex architecture, and takes more epochs and execution time. For the prediction model, this added complexity is well worth the added execution time as the results are considerable better at picking up the patterns as evident when comparing them to the ground truth. For the classification model, this distinction isn't as clear cut. We can see that the LSTM model still outperforms RNN in accuracy, but this marginal gain is not as significant. This might be due to how the classification model only considers a day, instead of having a whole week for its time series. LSTM's ability to retain long term dependencies in the data is therefore not as advantageous as in the prediction model. In the real world tasks, we need to know which is more important for us - accuracy or computation efficiency, then we can choose one approach with suitable parameters to get a balance performance.
+
+
 
 \nocite{tensorflow2015-whitepaper}
 \nocite{dataset}
