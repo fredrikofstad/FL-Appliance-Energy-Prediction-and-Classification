@@ -20,11 +20,11 @@ colormap={mymap}{[1pt]
   rgb(7pt)=(0.0313725490196078,0.317647058823529,0.611764705882353);
   rgb(8pt)=(0.0313725490196078,0.188235294117647,0.419607843137255)
 },
-point meta max=6638,
+point meta max=10741,
 point meta min=0,
 tick align=outside,
 tick pos=left,
-title={Confusion Matrix (LSTM)},
+title={Confusion Matrix (RNN)},
 x grid style={white},
 xlabel=\textcolor{dimgray85}{Predicted},
 xmajorgrids,
@@ -64,7 +64,7 @@ yticklabels={
   Refrigerator
 }
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=10, ymin=10, ymax=0] {figures/class-lstm-confusion-test-000.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=10, ymin=10, ymax=0] {figures/class-rnn-confusion-train-000.png};
 \end{axis}
 
 \end{tikzpicture}
