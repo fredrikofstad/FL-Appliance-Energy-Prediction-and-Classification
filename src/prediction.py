@@ -87,7 +87,7 @@ def train(network="RNN"):
         train_state = result.state
         train_metrics = result.metrics
         y_true_y_pred_list.append(train_metrics['client_work']["train"]['get_true_pred'])
-        loss_values.append(train_metrics['client_work']['train']['mean_squared_error'])
+        loss_values.append(train_metrics['client_work']['train']['loss'])
         print(f"Metrics for round {round_num}: {train_metrics}")
 
     # training
